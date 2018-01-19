@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace Server
         }
         public void Run()
         {
+
             AcceptClient();
             string message = client.Recieve();
             Respond(message);
@@ -29,6 +31,8 @@ namespace Server
         {
             TcpClient clientSocket = default(TcpClient);
             clientSocket = server.AcceptTcpClient();
+            //StreamReader sr = new StreamReader(clientSocket.GetStream());
+            //StreamWriter sw = new StreamWriter(clientSocket.GetStream())
             Console.WriteLine("Connected");
             NetworkStream stream = clientSocket.GetStream();
             client = new Client(stream, clientSocket);
