@@ -12,15 +12,23 @@ namespace Client
     {
         TcpClient clientSocket;
         NetworkStream stream;
+        public string name;
         public Client(string IP, int port)
         {
+            name = UI.GetInput();
             clientSocket = new TcpClient();
             clientSocket.Connect(IPAddress.Parse(IP), port);
             stream = clientSocket.GetStream();
         }
         public void Send()
         {
-            string messageString = UI.GetInput();
+            string messageString = name + ": " + UI.GetInput(); //string += username through a dictionary
+            byte[] message = Encoding.ASCII.GetBytes(messageString);
+            stream.Write(message, 0, message.Count());
+        }
+        public void IntroduceClient(string user)
+        {
+            string messageString = user + " has entered chat.";
             byte[] message = Encoding.ASCII.GetBytes(messageString);
             stream.Write(message, 0, message.Count());
         }
