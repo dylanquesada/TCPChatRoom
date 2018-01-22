@@ -16,6 +16,7 @@ namespace Server
         public static Client client;
         TcpListener server;
         Dictionary<int, string> users = new Dictionary<int, string>();
+        Queue<string> messages = new Queue<string>();
         public Server()
         {
             server = new TcpListener(IPAddress.Parse("127.0.0.1"), 9999);
@@ -28,7 +29,8 @@ namespace Server
             while (true)
             {
                 string message = client.Recieve();
-                Respond(message);
+                messages.Enqueue(message);
+                Respond(messages.Dequeue());
             }
         }
         private void AcceptClient()
