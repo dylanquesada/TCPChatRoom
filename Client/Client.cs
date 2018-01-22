@@ -14,8 +14,7 @@ namespace Client
         NetworkStream stream;
         public string name;
         public Client(string IP, int port)
-        {
-            name = UI.GetInput();
+        {            
             clientSocket = new TcpClient();
             clientSocket.Connect(IPAddress.Parse(IP), port);
             stream = clientSocket.GetStream();
@@ -25,6 +24,11 @@ namespace Client
             string messageString = name + ": " + UI.GetInput(); //string += username through a dictionary
             byte[] message = Encoding.ASCII.GetBytes(messageString);
             stream.Write(message, 0, message.Count());
+        }
+        public void GetName()
+        {
+            Console.WriteLine("Please enter your name: ");
+            name =  UI.GetInput();
         }
         public void IntroduceClient(string user)
         {
