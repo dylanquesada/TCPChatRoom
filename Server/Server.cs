@@ -11,11 +11,12 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-    class Server
+    class Server 
     {
+        public int counter = 0;
         public static Client client;
         TcpListener server;
-        Dictionary<int, string> users = new Dictionary<int, string>();
+        Dictionary<int, Client> users = new Dictionary<int, Client>();
         Queue<string> messages = new Queue<string>();
         public Server()
         {
@@ -24,14 +25,31 @@ namespace Server
         }
         public void Run()
         {
-
-            AcceptClient();
-            while (true)
+            Parallel.Invoke(() =>
             {
-                string message = client.Recieve();
-                messages.Enqueue(message);
-                Respond(messages.Dequeue());
-            }
+                while (true)
+                {
+                    AcceptClient();
+                }
+
+            },
+            () =>
+            {
+                while (true)
+                {
+                    string message = client.Recieve();
+                    messages.Enqueue(message);
+                }
+            },
+            () =>
+            { 
+                while (true)
+                {
+
+                    Respond(messages.Dequeue());
+                
+                }
+            });
         }
         private void AcceptClient()
         {
@@ -40,6 +58,8 @@ namespace Server
             Console.WriteLine("Connected");
             NetworkStream stream = clientSocket.GetStream();
             client = new Client(stream, clientSocket);
+            users.Add(counter, client);
+            counter++;
         }
         private void Respond(string body)
         {
