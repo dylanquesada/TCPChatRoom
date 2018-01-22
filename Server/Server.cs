@@ -17,14 +17,15 @@ namespace Server
         TcpListener server;
         Dictionary<int, string> users = new Dictionary<int, string>();
         Queue<string> messages = new Queue<string>();
+        //int numberOfUsers;
         public Server()
         {
             server = new TcpListener(IPAddress.Parse("127.0.0.1"), 9999);
             server.Start();
+            
         }
         public void Run()
         {
-
             AcceptClient();
             while (true)
             {
@@ -35,11 +36,11 @@ namespace Server
         }
         private void AcceptClient()
         {
-            TcpClient clientSocket = default(TcpClient);
-            clientSocket = server.AcceptTcpClient();
-            Console.WriteLine("Connected");
-            NetworkStream stream = clientSocket.GetStream();
-            client = new Client(stream, clientSocket);
+                TcpClient clientSocket = default(TcpClient);
+                clientSocket = server.AcceptTcpClient();
+                Console.WriteLine("Connected");
+                NetworkStream stream = clientSocket.GetStream();
+                client = new Client(stream, clientSocket);
         }
         private void Respond(string body)
         {
