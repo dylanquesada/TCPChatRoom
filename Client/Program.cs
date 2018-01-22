@@ -14,8 +14,14 @@ namespace Client
             
             Client client = new Client("127.0.0.1", 9999);            
             client.IntroduceClient(client.name);
-            client.Send();
-            //client.Recieve();
+            //client.Continue();
+            while (true)
+            {
+                client.Recieve();
+                //client.Continue();                
+                client.Send();
+                //Console.ReadLine();
+            }
             Console.ReadLine();
             
            

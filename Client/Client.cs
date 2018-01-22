@@ -14,10 +14,15 @@ namespace Client
         NetworkStream stream;
         public string name;
         public Client(string IP, int port)
-        {            
+        {
+            name = "Brian";
             clientSocket = new TcpClient();
             clientSocket.Connect(IPAddress.Parse(IP), port);
             stream = clientSocket.GetStream();
+        }
+        public void Continue()
+        {
+            stream.Flush();
         }
         public void Send()
         {
