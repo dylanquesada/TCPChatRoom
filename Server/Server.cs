@@ -27,16 +27,13 @@ namespace Server
             server.Start();
         }
         public void Run()
-        {
-            while (true)
-            {
+        {            
                 Parallel.Invoke(() =>
                 {
-
-
-                    AcceptClient();
-
-
+                    while (true)
+                    {
+                        AcceptClient();
+                    }
                 },
                 () =>
                 {
@@ -44,22 +41,31 @@ namespace Server
                     {
                         if (users.Count > 0)
                         {
-                            string message = client.Recieve();
-                            messages.Enqueue(message);
+                            for (int i = 0; i < users.Count; i++)
+                            {
+                                string message = users[i].Recieve();
+                                lock (message)
+                                {
+                                    messages.Enqueue(message);
+                                }
+                            }
                         }
                     }
 
                 },
                 () =>
                 {
-                    if (messages.Count > 0)
+                    while (true)
                     {
-                        Respond(messages.Dequeue());
+                        if (messages.Count > 0)
+                        {
+                            lock (messages)
+                            {
+                                Respond(messages.Dequeue());
+                            }
+                        }
                     }
-
-
-            });
-            }
+            });            
         }
         private void AcceptClient()
         {

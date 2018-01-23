@@ -21,18 +21,12 @@ namespace Client
             clientSocket.Connect(IPAddress.Parse(IP), port);
             stream = clientSocket.GetStream();
         }
-        public void Continue()
-        {
-            stream.Flush();
-        }
+        
         public void Send()
         {
-            while (true)
-            {
-                string messageString = name + ": " + UI.GetInput(); //string += username through a dictionary
-                byte[] message = Encoding.ASCII.GetBytes(messageString);
-                stream.Write(message, 0, message.Count());
-            }
+            string messageString = name + ": " + UI.GetInput(); 
+            byte[] message = Encoding.ASCII.GetBytes(messageString);
+            stream.Write(message, 0, message.Count());
         }
         public void GetName()
         {
@@ -47,12 +41,10 @@ namespace Client
         }
         public void Recieve()
         {
-            while (true)
-            {
-                byte[] recievedMessage = new byte[256];
-                stream.Read(recievedMessage, 0, recievedMessage.Length);
-                UI.DisplayMessage(Encoding.ASCII.GetString(recievedMessage));
-            }
+            byte[] recievedMessage = new byte[256];
+            stream.Read(recievedMessage, 0, recievedMessage.Length);
+            UI.DisplayMessage(Encoding.ASCII.GetString(recievedMessage));
+            
         }
 
         
