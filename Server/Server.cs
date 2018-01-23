@@ -25,31 +25,34 @@ namespace Server
         }
         public void Run()
         {
-            Parallel.Invoke(() =>
+            while (true)
             {
-                while (true)
+                Parallel.Invoke(() =>
                 {
+
+
                     AcceptClient();
-                }
 
-            },
-            () =>
-            {
-                while (true)
+
+                },
+                () =>
                 {
-                    string message = client.Recieve();
+                    
+                    string message =client.Recieve();
                     messages.Enqueue(message);
-                }
-            },
-            () =>
-            { 
-                while (true)
-                {
+                    
 
-                    Respond(messages.Dequeue());
-                
-                }
+                },
+                () =>
+                {
+                    if (messages.Count > 0)
+                    {
+                        Respond(messages.Dequeue());
+                    }
+
+
             });
+            }
         }
         private void AcceptClient()
         {
