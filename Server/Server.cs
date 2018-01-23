@@ -1,3 +1,4 @@
+
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -22,35 +23,37 @@ namespace Server
         {
             server = new TcpListener(IPAddress.Parse("127.0.0.1"), 9999);
             server.Start();
-            
         }
         public void Run()
         {
-            Parallel.Invoke(() =>
+            while (true)
             {
-                    AcceptClient();
-                
-
-            },
-            () =>
-            {
-               
-                    string message = client.Recieve();
-                    lock (messages)
-                    {
-                        messages.Enqueue(message);
-                    }
-            },
-            () =>
-            { 
-                if(messages.Count > 0)
+                Parallel.Invoke(() =>
                 {
-                    lock (messages)
+
+
+                    AcceptClient();
+
+
+                },
+                () =>
+                {
+                    
+                    string message =client.Recieve();
+                    messages.Enqueue(message);
+                    
+
+                },
+                () =>
+                {
+                    if (messages.Count > 0)
                     {
                         Respond(messages.Dequeue());
                     }
-                }
+
+
             });
+            }
         }
         private void AcceptClient()
         {
@@ -59,10 +62,7 @@ namespace Server
             Console.WriteLine("Connected");
             NetworkStream stream = clientSocket.GetStream();
             client = new Client(stream, clientSocket);
-            lock (users)
-            {
-                users.Add(counter, client);
-            }
+            users.Add(counter, client);
             counter++;
         }
         private void Respond(string body)
@@ -71,3 +71,4 @@ namespace Server
         }
     }
 }
+
