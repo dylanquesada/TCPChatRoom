@@ -28,54 +28,40 @@ namespace Server
         }
         public void Run()
         {            
-                Parallel.Invoke(() =>
+            AcceptClient(); 
+            
+        }
+        private void ChatClient(Client client)
+        {
+            while (true)
+            {
+                string message = client.Recieve();
+                lock (message)
                 {
-                    while (true)
-                    {
-                        AcceptClient();
-                    }
-                },
-                () =>
+                    messages.Enqueue(message);
+                }
+                if (messages.Count > 0)
                 {
-                    while (true)
+                    lock (messages)
                     {
-                        if (users.Count > 0)
-                        {
-                            for (int i = 0; i < users.Count; i++)
-                            {
-                                string message = users[i].Recieve();
-                                lock (message)
-                                {
-                                    messages.Enqueue(message);
-                                }
-                            }
-                        }
+                        Respond(messages.Dequeue());
                     }
-
-                },
-                () =>
-                {
-                    while (true)
-                    {
-                        if (messages.Count > 0)
-                        {
-                            lock (messages)
-                            {
-                                Respond(messages.Dequeue());
-                            }
-                        }
-                    }
-            });            
+                }
+            }
         }
         private void AcceptClient()
         {
-            TcpClient clientSocket = default(TcpClient);
-            clientSocket = server.AcceptTcpClient();
-            Console.WriteLine("Connected");
-            NetworkStream stream = clientSocket.GetStream();
-            client = new Client(stream, clientSocket);
-            users.Add(counter, client);
-            counter++;
+            while (true)
+            {
+                TcpClient clientSocket = default(TcpClient);
+                clientSocket = server.AcceptTcpClient();
+                Console.WriteLine("Connected");
+                NetworkStream stream = clientSocket.GetStream();
+                client = new Client(stream, clientSocket);
+                users.Add(counter, client);
+                counter++;
+                Task.Run(() => ChatClient(client));
+            }
         }
         private void Respond(string body)
         {
