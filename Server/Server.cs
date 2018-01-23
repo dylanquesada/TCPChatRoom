@@ -67,10 +67,11 @@ namespace Server
         }
         private void Respond(string body)
         {
-            for (int i = 0; i < users.Count; i++)
+            foreach (KeyValuePair<int, Client> entry in users)
             {
-                users[i].Send(body);
-            }
+                entry.Value.Send(body);
+            }          
+            
         }
     }
 }
