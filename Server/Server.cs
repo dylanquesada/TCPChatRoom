@@ -18,10 +18,12 @@ namespace Server
         public static Client client;
         TcpListener server;
         Ilogger logger;
-        Dictionary<int, Client> users = new Dictionary<int, Client>();
+        Dictionary<int, Client> users;
         Queue<string> messages = new Queue<string>();
         public Server(Ilogger logger)
         {
+            //comment
+            users = new Dictionary<int, Client>();
             this.logger = logger;
             server = new TcpListener(IPAddress.Parse("127.0.0.1"), 9999);
             server.Start();
