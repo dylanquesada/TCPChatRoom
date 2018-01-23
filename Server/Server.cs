@@ -65,7 +65,10 @@ namespace Server
         }
         private void Respond(string body)
         {
-             client.Send(body);
+            for (int i = 0; i < users.Count; i++)
+            {
+                users[i].Send(body);
+            }
         }
     }
 }
