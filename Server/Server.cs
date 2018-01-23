@@ -37,10 +37,14 @@ namespace Server
                 },
                 () =>
                 {
-                    
-                    string message =client.Recieve();
-                    messages.Enqueue(message);
-                    
+                    while (true)
+                    {
+                        if (users.Count > 0)
+                        {
+                            string message = client.Recieve();
+                            messages.Enqueue(message);
+                        }
+                    }
 
                 },
                 () =>

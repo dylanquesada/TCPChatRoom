@@ -8,9 +8,11 @@ namespace Server
 {
     class Program
     {
+        
         static void Main(string[] args)
         {
-            new Server().Run();
+            FileLogger fl = new FileLogger("File.txt");
+            new Server(fl).Run();
             Console.ReadLine();            
         }
     }
