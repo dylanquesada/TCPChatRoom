@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-    class Server
+    class Server 
     {
+        public int counter = 0;
         public static Client client;
         TcpListener server;
-        Dictionary<int, string> users = new Dictionary<int, string>();
+        Dictionary<int, Client> users = new Dictionary<int, Client>();
         Queue<string> messages = new Queue<string>();
-        //int numberOfUsers;
         public Server()
         {
             server = new TcpListener(IPAddress.Parse("127.0.0.1"), 9999);
@@ -26,21 +26,44 @@ namespace Server
         }
         public void Run()
         {
-            AcceptClient();
-            while (true)
+            Parallel.Invoke(() =>
             {
-                string message = client.Recieve();
-                messages.Enqueue(message);
-                Respond(messages.Dequeue());
-            }
+                    AcceptClient();
+                
+
+            },
+            () =>
+            {
+               
+                    string message = client.Recieve();
+                    lock (messages)
+                    {
+                        messages.Enqueue(message);
+                    }
+            },
+            () =>
+            { 
+                if(messages.Count > 0)
+                {
+                    lock (messages)
+                    {
+                        Respond(messages.Dequeue());
+                    }
+                }
+            });
         }
         private void AcceptClient()
         {
-                TcpClient clientSocket = default(TcpClient);
-                clientSocket = server.AcceptTcpClient();
-                Console.WriteLine("Connected");
-                NetworkStream stream = clientSocket.GetStream();
-                client = new Client(stream, clientSocket);
+            TcpClient clientSocket = default(TcpClient);
+            clientSocket = server.AcceptTcpClient();
+            Console.WriteLine("Connected");
+            NetworkStream stream = clientSocket.GetStream();
+            client = new Client(stream, clientSocket);
+            lock (users)
+            {
+                users.Add(counter, client);
+            }
+            counter++;
         }
         private void Respond(string body)
         {

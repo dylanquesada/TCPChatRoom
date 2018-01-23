@@ -8,14 +8,15 @@ using System.Threading.Tasks;
 
 namespace Client
 {
-    class Client
+    class Client 
     {
         TcpClient clientSocket;
         NetworkStream stream;
         public string name;
+        //public List<IObserver<Client>> observers;
         public Client(string IP, int port)
         {
-            name = "Brian";
+            GetName();
             clientSocket = new TcpClient();
             clientSocket.Connect(IPAddress.Parse(IP), port);
             stream = clientSocket.GetStream();
@@ -26,9 +27,12 @@ namespace Client
         }
         public void Send()
         {
-            string messageString = name + ": " + UI.GetInput(); //string += username through a dictionary
-            byte[] message = Encoding.ASCII.GetBytes(messageString);
-            stream.Write(message, 0, message.Count());
+            while (true)
+            {
+                string messageString = name + ": " + UI.GetInput(); //string += username through a dictionary
+                byte[] message = Encoding.ASCII.GetBytes(messageString);
+                stream.Write(message, 0, message.Count());
+            }
         }
         public void GetName()
         {
@@ -43,9 +47,14 @@ namespace Client
         }
         public void Recieve()
         {
-            byte[] recievedMessage = new byte[256];
-            stream.Read(recievedMessage, 0, recievedMessage.Length);
-            UI.DisplayMessage(Encoding.ASCII.GetString(recievedMessage));
+            while (true)
+            {
+                byte[] recievedMessage = new byte[256];
+                stream.Read(recievedMessage, 0, recievedMessage.Length);
+                UI.DisplayMessage(Encoding.ASCII.GetString(recievedMessage));
+            }
         }
+
+        
     }
 }
