@@ -31,7 +31,7 @@ namespace Client
         public void GetName()
         {
             Console.WriteLine("Please enter your name: ");
-            name =  UI.GetInput();
+            name = UI.GetInput();
         }
         public void IntroduceClient(string user)
         {

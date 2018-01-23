@@ -69,10 +69,11 @@ namespace Server
         }
         private void Respond(string body)
         {
+            logger.Log(body);
             foreach (KeyValuePair<int, Client> entry in users)
             {
                 entry.Value.Send(body);
-                logger.Log(body);
+                
             }          
             
         }
