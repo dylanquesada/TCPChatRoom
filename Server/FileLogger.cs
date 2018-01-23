@@ -15,7 +15,7 @@ namespace Server
         }
         public void Log(string message)
         {
-            string path = @"C:\Users\dques\Documents\Visual Studio 2015\Projects\TCPChatRoom\ChatLog.txt";
+            string path = @"ChatLog.txt";
             if (!File.Exists(path))
             {
                 // Create a file to write to.
