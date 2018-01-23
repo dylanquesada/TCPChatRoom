@@ -13,7 +13,9 @@ namespace Server
         {
             FileLogger fl = new FileLogger("File.txt");
             new Server(fl).Run();
-            Console.ReadLine();            
+            Console.ReadLine();
+            
+                    
         }
     }
 }

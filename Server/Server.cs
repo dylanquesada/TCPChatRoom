@@ -13,23 +13,25 @@ using System.Threading.Tasks;
 namespace Server
 {
     class Server 
-    {
+    {       
         public int counter = 0;
         public static Client client;
         TcpListener server;
         Ilogger logger;
         Dictionary<int, Client> users;
-        Queue<string> messages = new Queue<string>();
+        Queue<string> messages;
         public Server(Ilogger logger)
         {
             
             users = new Dictionary<int, Client>();
+            messages = new Queue<string>();
             this.logger = logger;
             server = new TcpListener(IPAddress.Parse("127.0.0.1"), 9999);
             server.Start();
         }
         public void Run()
-        {            
+        {
+            
             AcceptClient(); 
             
         }
@@ -70,9 +72,13 @@ namespace Server
             foreach (KeyValuePair<int, Client> entry in users)
             {
                 entry.Value.Send(body);
+                logger.Log(body);
             }          
             
         }
+
+
+
     }
 }
 

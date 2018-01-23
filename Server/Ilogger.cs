@@ -8,6 +8,6 @@ namespace Server
 {
     interface Ilogger
     {
-        void Log();
+        void Log(string message);
     }
 }
