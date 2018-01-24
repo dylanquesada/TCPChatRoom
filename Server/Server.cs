@@ -50,8 +50,7 @@ namespace Server
                     lock (message)
                     {
                         if (NotFirstTime) {
-                            string Name = message.Substring(0, message.IndexOf(":"));
-                            client.name = Name;
+                            SetName(message, client);
                         }
                         
                         NotFirstTime = true;
@@ -74,6 +73,11 @@ namespace Server
                     client.Exit();
                 }
             }
+        }
+        public void SetName(string message, Client client)
+        {
+            client.name = message.Substring(0, message.IndexOf(":"));
+                        
         }
         private void AcceptClient()
         {
