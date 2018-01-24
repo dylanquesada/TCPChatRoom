@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -20,8 +21,16 @@ namespace Server
         }
         public void Send(string Message)
         {
-            byte[] message = Encoding.ASCII.GetBytes(Message);
-            stream.Write(message, 0, message.Count());
+            try
+            {
+                byte[] message = Encoding.ASCII.GetBytes(Message);
+                stream.Write(message, 0, message.Count());
+            }
+            catch (Exception)
+            {
+                string exit = "Left";
+                Console.WriteLine(exit);
+            }
         }
         public string Recieve()
         {
@@ -35,9 +44,11 @@ namespace Server
             }
             catch (Exception)
             {
-                client.Close();
-                return "Client has left.";
+                string exit = "Left";
+                Console.WriteLine(exit);
+                return exit;
             }
+
         }
 
     }
