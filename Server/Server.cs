@@ -46,6 +46,7 @@ namespace Server
                 {
                     lock (messages)
                     {
+                        logger.Log(messages.Peek());
                         Respond(messages.Dequeue());
                     }
                 }
@@ -68,7 +69,7 @@ namespace Server
         }
         private void Respond(string body)
         {
-            logger.Log(body);
+            
             foreach (KeyValuePair<int, Client> entry in users)
             {
                 entry.Value.Send(body);
