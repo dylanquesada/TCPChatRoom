@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -20,16 +21,34 @@ namespace Server
         }
         public void Send(string Message)
         {
-            byte[] message = Encoding.ASCII.GetBytes(Message);
-            stream.Write(message, 0, message.Count());
+            try
+            {
+                byte[] message = Encoding.ASCII.GetBytes(Message);
+                stream.Write(message, 0, message.Count());
+            }
+            catch (Exception)
+            {
+                string exit = "Left";
+                Console.WriteLine(exit);
+            }
         }
         public string Recieve()
         {
-            byte[] recievedMessage = new byte[256];
-            stream.Read(recievedMessage, 0, recievedMessage.Length);
-            string recievedMessageString = Encoding.ASCII.GetString(recievedMessage);
-            Console.WriteLine(recievedMessageString);
-            return recievedMessageString;
+            try
+            {
+                byte[] recievedMessage = new byte[256];
+                stream.Read(recievedMessage, 0, recievedMessage.Length);
+                string recievedMessageString = Encoding.ASCII.GetString(recievedMessage);
+                Console.WriteLine(recievedMessageString);
+                return recievedMessageString;
+            }
+            catch (Exception)
+            {
+                string exit = "Left";
+                Console.WriteLine(exit);
+                return exit;
+            }
+
         }
 
     }

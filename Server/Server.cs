@@ -30,10 +30,8 @@ namespace Server
             server.Start();
         }
         public void Run()
-        {
-            
-            AcceptClient(); 
-            
+        {       
+            AcceptClient();            
         }
         private void ChatClient(Client client)
         {
@@ -57,14 +55,15 @@ namespace Server
         {
             while (true)
             {
-                TcpClient clientSocket = default(TcpClient);
-                clientSocket = server.AcceptTcpClient();
-                Console.WriteLine("Connected");
-                NetworkStream stream = clientSocket.GetStream();
-                client = new Client(stream, clientSocket);
-                users.Add(counter, client);
-                counter++;
-                Task.Run(() => ChatClient(client));
+                 TcpClient clientSocket = default(TcpClient);
+                 clientSocket = server.AcceptTcpClient();
+                 Console.WriteLine("Connected");
+                 NetworkStream stream = clientSocket.GetStream();
+                 client = new Client(stream, clientSocket);
+                 users.Add(counter, client);
+                 counter++;
+                 Task.Run(() => ChatClient(client));
+                
             }
         }
         private void Respond(string body)
