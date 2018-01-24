@@ -23,7 +23,7 @@ namespace Client
         
         public void Send()
         {
-            string messageString = name + ": " + UI.GetInput(); 
+            string messageString = name + ": " + UI.GetInput() + "]";
             byte[] message = Encoding.ASCII.GetBytes(messageString);
             stream.Write(message, 0, message.Count());
         }
@@ -34,7 +34,8 @@ namespace Client
         }
         public void IntroduceClient(string user)
         {
-            string messageString = user + " has entered chat.";
+            string messageString = user + " has entered chat." + "]";
+            
             byte[] message = Encoding.ASCII.GetBytes(messageString);
             stream.Write(message, 0, message.Count());
         }
@@ -42,7 +43,9 @@ namespace Client
         {
             byte[] recievedMessage = new byte[256];
             stream.Read(recievedMessage, 0, recievedMessage.Length);
-            UI.DisplayMessage(Encoding.ASCII.GetString(recievedMessage));
+            string recievedMessageString = Encoding.ASCII.GetString(recievedMessage);
+            recievedMessageString = recievedMessageString.Substring(0, recievedMessageString.LastIndexOf(']'));
+            UI.DisplayMessage(recievedMessageString);
             
         }
 

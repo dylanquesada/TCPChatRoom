@@ -28,6 +28,7 @@ namespace Server
             byte[] recievedMessage = new byte[256];
             stream.Read(recievedMessage, 0, recievedMessage.Length);
             string recievedMessageString = Encoding.ASCII.GetString(recievedMessage);
+            recievedMessageString = recievedMessageString.Substring(0, recievedMessageString.LastIndexOf(']'));
             Console.WriteLine(recievedMessageString);
             return recievedMessageString;
             
@@ -35,9 +36,10 @@ namespace Server
        
         public void Notify(string Message)
         {
+            Message = Message + "]";
             byte[] message = Encoding.ASCII.GetBytes(Message);
             stream.Write(message, 0, message.Count());
         }
-
+      
     }
 }
