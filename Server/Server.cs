@@ -14,7 +14,7 @@ namespace Server
 {
     class Server 
     {
-        public bool stop = false;
+        //public bool stop = false;
         public bool NotFirstTime;
         public static Client client;
         public string ServerIP;
@@ -42,7 +42,7 @@ namespace Server
         private void ChatClient(Client client)
         {
             NotFirstTime = false;
-            while (!stop)
+            while (!client.stop)
             {
                 try
                 {
@@ -67,9 +67,10 @@ namespace Server
                 }
                 catch (Exception)
                 {
-                    string exit = "Left SEND";
-                    Console.WriteLine(exit);
-                    stop = true;
+                    string exit = client.name + " has left.";
+                    users.Remove(client);
+                    Respond(exit);
+                    client.stop = true;
                     
                 }
             }
