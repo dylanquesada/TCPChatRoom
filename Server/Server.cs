@@ -70,6 +70,8 @@ namespace Server
                     string exit = client.name + " has left.";
                     users.Remove(client);
                     Respond(exit);
+                    logger.Log(exit);
+                    Console.WriteLine(exit);
                     client.stop = true;
                     
                 }
