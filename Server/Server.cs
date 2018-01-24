@@ -22,13 +22,13 @@ namespace Server
         
         public TcpListener server;
         Ilogger logger;
-        public Dictionary<Client, Client> users;
+        public Dictionary<IMember, Client> users;
         Queue<string> messages;
         public Server(Ilogger logger)
         {
             ServerIP = "192.168.0.119";
             port = 9999;
-            users = new Dictionary<Client, Client>();
+            users = new Dictionary<IMember, Client>();
             messages = new Queue<string>();
             this.logger = logger;
             server = new TcpListener(IPAddress.Parse(ServerIP), port);
@@ -70,7 +70,7 @@ namespace Server
                     string exit = "Left SEND";
                     Console.WriteLine(exit);
                     stop = true;
-                    client.Exit();
+                    
                 }
             }
         }
@@ -88,19 +88,19 @@ namespace Server
                 Console.WriteLine("Connected");
                 NetworkStream stream = clientSocket.GetStream();
                 client = new Client(stream, clientSocket);
-                client.Join(client);
                 users.Add(client, client);
                 Task.Run(() => ChatClient(client));                
             }
         }
         private void Respond(string body)
         {            
-            foreach (KeyValuePair<Client, Client> entry in users)
+            foreach (KeyValuePair<IMember, Client> entry in users)
             {
-                entry.Value.Send(body);                
+                entry.Value.Notify(body);                
             }          
             
         }
+
 
 
 

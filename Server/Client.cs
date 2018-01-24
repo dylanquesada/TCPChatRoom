@@ -20,14 +20,7 @@ namespace Server
             client = Client;
             UserId = "495933b6-1762-47a1-b655-483510072e73";
         }
-        public void Send(string Message)
-        {
 
-            byte[] message = Encoding.ASCII.GetBytes(Message);
-            stream.Write(message, 0, message.Count());
-            
-            
-        }
         public string Recieve()
         {
             try
@@ -46,17 +39,11 @@ namespace Server
             }
 
         }
-        public void Exit()
+       
+        public void Notify(string Message)
         {
-            //users.Remove(client);
-        }
-        public void Join(Client client)
-        {
-            //users.Add(client, client);
-        }
-        public void Notify()
-        {
-
+            byte[] message = Encoding.ASCII.GetBytes(Message);
+            stream.Write(message, 0, message.Count());
         }
 
     }
