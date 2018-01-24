@@ -14,19 +14,23 @@ namespace Server
 {
     class Server 
     {       
-        public int counter = 0;
+        public int counter;
         public static Client client;
+        public string ServerIP;
+        public int port;
         TcpListener server;
         Ilogger logger;
         Dictionary<int, Client> users;
         Queue<string> messages;
         public Server(Ilogger logger)
         {
-            
+            ServerIP = "192.168.0.119";
+            port = 9999;
+            counter = 0;
             users = new Dictionary<int, Client>();
             messages = new Queue<string>();
             this.logger = logger;
-            server = new TcpListener(IPAddress.Parse("127.0.0.1"), 9999);
+            server = new TcpListener(IPAddress.Parse(ServerIP), port);
             server.Start();
         }
         public void Run()
@@ -69,8 +73,7 @@ namespace Server
             }
         }
         private void Respond(string body)
-        {
-            
+        {            
             foreach (KeyValuePair<int, Client> entry in users)
             {
                 entry.Value.Send(body);

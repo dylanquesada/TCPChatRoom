@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-    interface IObserver
+    interface IMember
     {
-        void NewClient();
+        void Join();
     }
 }

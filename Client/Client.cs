@@ -13,7 +13,6 @@ namespace Client
         TcpClient clientSocket;
         NetworkStream stream;
         public string name;
-        //public List<IObserver<Client>> observers;
         public Client(string IP, int port)
         {
             GetName();
