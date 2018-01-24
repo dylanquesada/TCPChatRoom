@@ -13,25 +13,27 @@ using System.Threading.Tasks;
 namespace Server
 {
     class Server 
-    {       
-        public int counter;
+    {
+        public bool stop = false;
+        public bool NotFirstTime;
         public static Client client;
         public string ServerIP;
         public int port;
-        TcpListener server;
+        
+        public TcpListener server;
         Ilogger logger;
-        Dictionary<int, Client> users;
+        public Dictionary<Client, Client> users;
         Queue<string> messages;
         public Server(Ilogger logger)
         {
             ServerIP = "192.168.0.119";
             port = 9999;
-            counter = 0;
-            users = new Dictionary<int, Client>();
+            users = new Dictionary<Client, Client>();
             messages = new Queue<string>();
             this.logger = logger;
             server = new TcpListener(IPAddress.Parse(ServerIP), port);
             server.Start();
+            
         }
         public void Run()
         {       
@@ -39,20 +41,37 @@ namespace Server
         }
         private void ChatClient(Client client)
         {
-            while (true)
+            NotFirstTime = false;
+            while (!stop)
             {
-                string message = client.Recieve();
-                lock (message)
+                try
                 {
-                    messages.Enqueue(message);
-                }
-                if (messages.Count > 0)
-                {
-                    lock (messages)
+                    string message = client.Recieve();
+                    lock (message)
                     {
-                        logger.Log(messages.Peek());
-                        Respond(messages.Dequeue());
+                        if (NotFirstTime) {
+                            string Name = message.Substring(0, message.IndexOf(":"));
+                            client.name = Name;
+                        }
+                        
+                        NotFirstTime = true;
+                        messages.Enqueue(message);
                     }
+                    if (messages.Count > 0)
+                    {
+                        lock (messages)
+                        {
+                            logger.Log(messages.Peek());
+                            Respond(messages.Dequeue());
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    string exit = "Left SEND";
+                    Console.WriteLine(exit);
+                    stop = true;
+                    client.Exit();
                 }
             }
         }
@@ -60,23 +79,21 @@ namespace Server
         {
             while (true)
             {
-                 TcpClient clientSocket = default(TcpClient);
-                 clientSocket = server.AcceptTcpClient();
-                 Console.WriteLine("Connected");
-                 NetworkStream stream = clientSocket.GetStream();
-                 client = new Client(stream, clientSocket);
-                 users.Add(counter, client);
-                 counter++;
-                 Task.Run(() => ChatClient(client));
-                
+                TcpClient clientSocket = default(TcpClient);
+                clientSocket = server.AcceptTcpClient();
+                Console.WriteLine("Connected");
+                NetworkStream stream = clientSocket.GetStream();
+                client = new Client(stream, clientSocket);
+                client.Join(client);
+                users.Add(client, client);
+                Task.Run(() => ChatClient(client));                
             }
         }
         private void Respond(string body)
         {            
-            foreach (KeyValuePair<int, Client> entry in users)
+            foreach (KeyValuePair<Client, Client> entry in users)
             {
-                entry.Value.Send(body);
-                
+                entry.Value.Send(body);                
             }          
             
         }

@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-    class Client
+    class Client : IMember
     {
         NetworkStream stream;
         TcpClient client;
         public string UserId;
+        public string name;
         public Client(NetworkStream Stream, TcpClient Client)
         {
             stream = Stream;
@@ -21,16 +22,11 @@ namespace Server
         }
         public void Send(string Message)
         {
-            try
-            {
-                byte[] message = Encoding.ASCII.GetBytes(Message);
-                stream.Write(message, 0, message.Count());
-            }
-            catch (Exception)
-            {
-                string exit = "Left";
-                Console.WriteLine(exit);
-            }
+
+            byte[] message = Encoding.ASCII.GetBytes(Message);
+            stream.Write(message, 0, message.Count());
+            
+            
         }
         public string Recieve()
         {
@@ -44,10 +40,22 @@ namespace Server
             }
             catch (Exception)
             {
-                string exit = "Left";
+                string exit = "Left Recieve";
                 Console.WriteLine(exit);
                 return exit;
             }
+
+        }
+        public void Exit()
+        {
+            //users.Remove(client);
+        }
+        public void Join(Client client)
+        {
+            //users.Add(client, client);
+        }
+        public void Notify()
+        {
 
         }
 

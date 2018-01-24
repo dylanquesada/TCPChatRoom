@@ -8,7 +8,7 @@ namespace Server
 {
     interface IMember
     {
-        void Join();
+        void Join(Client client);
         void Exit();
         void Notify();
     }
