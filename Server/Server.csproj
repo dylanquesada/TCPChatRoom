@@ -46,7 +46,7 @@
     <Compile Include="Client.cs" />
     <Compile Include="FileLogger.cs" />
     <Compile Include="Ilogger.cs" />
-    <Compile Include="IObserver.cs" />
+    <Compile Include="IMember.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
