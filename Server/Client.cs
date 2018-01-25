@@ -43,7 +43,8 @@ namespace Server
       
         public void RelayDirectMessage(string Message)
         {
-            Message = "(Direct Message from )" + Message + "]";
+            string DM = "(DirectMessageFrom)";
+            Message = string.Concat(DM, Message) + "]";
             byte[] message = Encoding.ASCII.GetBytes(Message);
             stream.Write(message, 0, message.Count());
         }

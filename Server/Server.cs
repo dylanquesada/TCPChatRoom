@@ -15,7 +15,7 @@ namespace Server
     class Server 
     {
         //public bool stop = false;
-        public bool NotFirstTime;
+        
         public static Client client;
         public string ServerIP;
         public int port;
@@ -26,7 +26,7 @@ namespace Server
         Queue<string> messages;
         public Server(Ilogger logger)
         {
-            ServerIP = "192.168.0.119";
+            ServerIP = "127.0.0.1";
             port = 9999;
             users = new Dictionary<IMember, Client>();
             messages = new Queue<string>();
@@ -41,7 +41,7 @@ namespace Server
         }
         private void ChatClient(Client client)
         {
-            NotFirstTime = false;
+            bool FirstTime = true;
             while (!client.stop)
             {
                 try
@@ -49,11 +49,12 @@ namespace Server
                     string message = client.Recieve();
                     lock (message)
                     {
-                        if (NotFirstTime) {
+                        if (FirstTime) {
                             SetName(message, client);
+                            FirstTime = false;
                         }
                         
-                        NotFirstTime = true;
+                       
                         messages.Enqueue(message);
                     }
                     if (messages.Count > 0)
@@ -61,7 +62,15 @@ namespace Server
                         lock (messages)
                         {
                             logger.Log(messages.Peek());
-                            Respond(messages.Dequeue());
+                            if (CheckForDirectMessage(messages.Peek()))
+                            {
+                                string directMessage = messages.Dequeue();
+                                RespondDirectMessage(directMessage);
+                            }
+                            else
+                            {
+                                Respond(messages.Dequeue());
+                            }                                
                         }
                     }
                 }
@@ -77,10 +86,24 @@ namespace Server
                 }
             }
         }
+        public bool CheckForDirectMessage(string message)
+        {
+            bool DM = false;
+            foreach (KeyValuePair<IMember, Client> entry in users)
+            {
+                if (message.Contains("@"))
+                {
+                    if (message.Substring(message.IndexOf('@') + 1, entry.Value.name.Length).Equals(entry.Value.name))
+                    {
+                        DM = true;
+                    }
+                }
+            }
+            return DM;
+        }
         public void SetName(string message, Client client)
         {
-            client.name = message.Substring(0, message.IndexOf(":"));
-                        
+            client.name = message.Substring(0, message.IndexOf(" "));                        
         }
         private void AcceptClient()
         {
@@ -103,21 +126,23 @@ namespace Server
             }          
             
         }
-        private void RespondDirectMessage(string body, string recipient)
+        private void RespondDirectMessage(string message)
         {
             foreach(KeyValuePair<IMember, Client> entry in users)
             {
-                if(entry.Value.name == recipient)
-                {
-                    entry.Value.RelayDirectMessage(body);
+                if (message.Substring(message.IndexOf('@') + 1, entry.Value.name.Length).Equals(entry.Value.name))
+                { 
+                    entry.Value.RelayDirectMessage(message);
                 }
             }
         }
 
 
+        
 
 
-    }
+
+}
 }
 
 

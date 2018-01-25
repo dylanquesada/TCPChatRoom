@@ -34,8 +34,7 @@ namespace Client
         }
         public void IntroduceClient(string user)
         {
-            string messageString = user + " has entered chat." + "]";
-            
+            string messageString = user + " has entered chat." + "]";            
             byte[] message = Encoding.ASCII.GetBytes(messageString);
             stream.Write(message, 0, message.Count());
         }
