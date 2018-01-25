@@ -44,6 +44,13 @@ namespace Client
             stream.Read(recievedMessage, 0, recievedMessage.Length);
             string recievedMessageString = Encoding.ASCII.GetString(recievedMessage);
             recievedMessageString = recievedMessageString.Substring(0, recievedMessageString.LastIndexOf(']'));
+            if (recievedMessageString.Contains("@")){
+                string subtractor = recievedMessageString.Substring(0, recievedMessageString.LastIndexOf(">"));
+                string firstHalf = recievedMessageString.Substring(0, recievedMessageString.IndexOf('@'));
+                int secondHalfLength = recievedMessageString.Length - subtractor.Length;
+                string secondHalf = recievedMessageString.Substring(recievedMessageString.IndexOf(">"), secondHalfLength);
+                recievedMessageString = string.Concat(firstHalf, secondHalf);
+            }
             UI.DisplayMessage(recievedMessageString);
             
         }
