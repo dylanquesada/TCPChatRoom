@@ -103,6 +103,16 @@ namespace Server
             }          
             
         }
+        private void RespondDirectMessage(string body, string recipient)
+        {
+            foreach(KeyValuePair<IMember, Client> entry in users)
+            {
+                if(entry.Value.name == recipient)
+                {
+                    entry.Value.RelayDirectMessage(body);
+                }
+            }
+        }
 
 
 
