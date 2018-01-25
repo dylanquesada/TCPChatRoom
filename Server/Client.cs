@@ -41,5 +41,11 @@ namespace Server
             stream.Write(message, 0, message.Count());
         }
       
+        public void RelayDirectMessage(string Message)
+        {
+            Message = "(Direct Message from )" + Message + "]";
+            byte[] message = Encoding.ASCII.GetBytes(Message);
+            stream.Write(message, 0, message.Count());
+        }
     }
 }
